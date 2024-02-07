@@ -1,0 +1,35 @@
+
+  model{
+    
+    # Prior on lambda (population growth rate)
+    mu.lam_0 ~ dunif(0, 10)
+    mu.lam_0_log <- log(mu.lam_0)
+  
+    sig.lam_i ~ dunif(0, 2)
+    sig.lam_i_log <- sig.lam_i/mu.lam_0
+    tau.lam_i_log <- pow(sig.lam_i_log, -2)
+
+    # Likelihood
+    # Model for N0 : uniform priors
+    for(i in 1:I){
+      N[i,1] ~ dunif(0, max.N0)
+    } # i
+    
+    # Process model over time
+    for(i in 1:I){
+    lambda_log[i] ~ dnorm(mu.lam_0_log, tau.lam_i_log)
+    lambda[i] <- exp(lambda_log[i])
+      for (t in 1:(T-1)){
+        N[i,t+1] <- N[i,t] * lambda[i]
+      } # t
+    } # i
+    
+    ## Observation process
+    for(i in 1:I){
+      for(t in 1:T){
+        y[i,t] ~ dpois(N[i,t]*PI[i,t])
+        n[i,t] <- N[i,t]
+      } # t
+    } # i
+    
+  } # model
