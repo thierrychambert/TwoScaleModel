@@ -5,7 +5,7 @@
     mu.lam_0 ~ dunif(0, 10)
     mu.lam_0_log <- log(mu.lam_0)
   
-    sig.lam_i ~ dunif(0, 2)
+    sig.lam_i ~ dunif(0, 20)
     sig.lam_i_log <- sig.lam_i/mu.lam_0
     tau.lam_i_log <- pow(sig.lam_i_log, -2)
 
